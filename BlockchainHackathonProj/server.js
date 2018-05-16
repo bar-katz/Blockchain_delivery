@@ -45,9 +45,25 @@ async function RequestTransfer(my_address, description) {
   var parcelContract = web3.eth.contract(config.delivery_json);
   var parcel = parcelContract.at(config.delivery_contract);
   var company_list = getCompanyList();
+
+  var current_company = "";
   
   web3.eth.defaultAccount = my_address;
-  return await parcel.requestDelivery.sendTransaction(description);
+  var cond1 = parcel.isBuyer.sendTransaction(my_address);
+  var cond2 = company_list.isValidCompany.call(my_address);
+
+  if(cond1 || cond2) {
+    current_company = await parcel.requestDelivery.call(description);
+
+    if(current_company !== "Seller") {
+      current_company = company_list.getCompanyInfo.call(current_company)[0];
+    }
+
+    var temp = "Waiting for approval from ", current_company;
+    return temp;
+  }
+
+  return "Not a valid company\ end user.";
 }
 
 async function ConfirmTransfer(my_address) {
@@ -93,7 +109,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.post('/', async function(req, res) {
-        // TODO Parse JSON get parameters
+        // parse JSON get parameters
         var command = req.body.command;
         var args = [req.body.args.first, req.body.args.second];
 
@@ -111,7 +127,8 @@ app.post('/', async function(req, res) {
           res.send([{body : feedback}]);
         } else if (command == 4) {
           web3.eth.defaultAccount = args[0];
-          ConfirmTransfer();
+          ConfirmTransfer(args[0]);
+          res.send("Transfer Complete.");
         }
         
     });

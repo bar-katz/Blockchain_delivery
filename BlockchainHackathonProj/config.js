@@ -1,6 +1,6 @@
 module.exports = {
-    delivery_contract : '0xe432e7c17343a20b8c2518498eef556795aae090',
-    companies_list_contract : '0x1b3b85841f142f22e5ec1f67238d4ada92ebc27c',
+    delivery_contract : '0xbfed532beebc5897410cd35c0f79fd9ed60c1bb3',
+    companies_list_contract : '0xaa0eccec5bcb6fa89862d7fd3da733555921253f',
     delivery_json : ([
       {
         "constant": true,
