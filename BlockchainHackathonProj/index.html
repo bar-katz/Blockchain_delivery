@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+
+	<link rel="stylesheet" type="text/css" href="main.css">
+
+	<script src="./node_modules/web3/dist/web3.min.js"></script>
+	<script src="../Server.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+
+		<h1>Parcel Instructor</h1>
+
+		<h2 id="instructor"></h2>
+		<img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+
+		<label for="name" class="col-lg-2 control-label">Instructor Name</label>
+		<input id="name" type="text">
+
+		<label for="name" class="col-lg-2 control-label">Instructor Age</label>
+		<input id="age" type="text">
+
+		<button id="button">Update Instructor</button>
+
+
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+	<script>
+		function createContract(sellerAddress, buyerAddress) {
+			var parcelContract = web3.eth.contract([
+				{
+					"constant": true,
+					"inputs": [],
+					"name": "seller",
+					"outputs": [
+						{
+							"name": "",
+							"type": "address"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"constant": true,
+					"inputs": [],
+					"name": "getCompanyStatus",
+					"outputs": [
+						{
+							"name": "",
+							"type": "string"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"constant": false,
+					"inputs": [],
+					"name": "requestDelivery",
+					"outputs": [],
+					"payable": false,
+					"stateMutability": "nonpayable",
+					"type": "function"
+				},
+				{
+					"constant": true,
+					"inputs": [],
+					"name": "company_status",
+					"outputs": [
+						{
+							"name": "",
+							"type": "string"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"constant": true,
+					"inputs": [],
+					"name": "contract_state",
+					"outputs": [
+						{
+							"name": "",
+							"type": "uint8"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"constant": false,
+					"inputs": [],
+					"name": "buyerReceived",
+					"outputs": [],
+					"payable": false,
+					"stateMutability": "nonpayable",
+					"type": "function"
+				},
+				{
+					"constant": true,
+					"inputs": [],
+					"name": "buyer",
+					"outputs": [
+						{
+							"name": "",
+							"type": "address"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"constant": false,
+					"inputs": [],
+					"name": "requestFlush",
+					"outputs": [],
+					"payable": false,
+					"stateMutability": "nonpayable",
+					"type": "function"
+				},
+				{
+					"constant": true,
+					"inputs": [],
+					"name": "package_state",
+					"outputs": [
+						{
+							"name": "",
+							"type": "uint8"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"constant": false,
+					"inputs": [],
+					"name": "currentToNext",
+					"outputs": [],
+					"payable": false,
+					"stateMutability": "nonpayable",
+					"type": "function"
+				},
+				{
+					"inputs": [
+						{
+							"name": "endPointAddress",
+							"type": "address"
+						}
+					],
+					"payable": false,
+					"stateMutability": "nonpayable",
+					"type": "constructor"
+				}
+			]);
+			var parcel = parcelContract.at('0xef5268d7a6d92a47adfe30081dc70760c557ac7c');
+			return parcel;
+		}
+		function getCompanyInfo() {
+			var companyListContract = web3.eth.contract([
+				{
+					"constant": false,
+					"inputs": [
+						{
+							"name": "company_add",
+							"type": "address"
+						}
+					],
+					"name": "removeCompany",
+					"outputs": [],
+					"payable": false,
+					"stateMutability": "nonpayable",
+					"type": "function"
+				},
+				{
+					"constant": true,
+					"inputs": [
+						{
+							"name": "company_add",
+							"type": "address"
+						}
+					],
+					"name": "getCompanyInfo",
+					"outputs": [
+						{
+							"name": "c_name",
+							"type": "string"
+						},
+						{
+							"name": "c_country",
+							"type": "string"
+						},
+						{
+							"name": "c_city",
+							"type": "string"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"constant": false,
+					"inputs": [
+						{
+							"name": "name",
+							"type": "string"
+						},
+						{
+							"name": "public_key",
+							"type": "address"
+						},
+						{
+							"name": "country",
+							"type": "string"
+						},
+						{
+							"name": "city",
+							"type": "string"
+						}
+					],
+					"name": "addCompany",
+					"outputs": [],
+					"payable": false,
+					"stateMutability": "nonpayable",
+					"type": "function"
+				},
+				{
+					"constant": true,
+					"inputs": [],
+					"name": "getCount",
+					"outputs": [
+						{
+							"name": "",
+							"type": "uint256"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"constant": true,
+					"inputs": [
+						{
+							"name": "company",
+							"type": "address"
+						}
+					],
+					"name": "isValidCompany",
+					"outputs": [
+						{
+							"name": "",
+							"type": "bool"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"constant": true,
+					"inputs": [],
+					"name": "count_company",
+					"outputs": [
+						{
+							"name": "",
+							"type": "uint256"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"constant": true,
+					"inputs": [],
+					"name": "admin",
+					"outputs": [
+						{
+							"name": "",
+							"type": "address"
+						}
+					],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				},
+				{
+					"inputs": [],
+					"payable": false,
+					"stateMutability": "nonpayable",
+					"type": "constructor"
+				}
+			]);
+			var companyInfo = companyListContract.at('0x632420387aabb450e9765aee6bb1d8a73c601cd3');
+			return companyInfo;
+		}
+
+		var CommandEnum = {
+			"CreateContract": 1, "GetInfo": 2,
+			"RequestTransfer": 3, "ConfirmTransfer": 4
+		};
+		Object.freeze(CommandEnum);
+
+		function SolidityConnection(contract, address) {
+			this.contract = contract;
+			this.address = address;
+		};
+		SolidityConnection.prototype.getAddress = function () {
+			return this.address;
+		};
+
+		// ----------------- WEB3
+		if (typeof web3 !== 'undefined') {
+			web3 = new Web3(web3.currentProvider);
+		} else {
+			// set the provider you want from Web3.providers
+			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+		}
+		web3.eth.defaultAccount = web3.eth.accounts[0];
+		var parcel = createContract('a', 'b');
+		var companyInfo = getCompanyInfo();
+		console.log(parcel);
+
+		parcel.getCompanyStatus(function (error, result) {
+			if (!error) {
+				var address = result.split(",");
+
+				$("#instructor").html(address[0] + " " + address[1]);
+				console.log(result);
+			}
+			else
+				console.error(error);
+		});
+
+		var info = companyInfo.getCompanyInfo("0x632420387aabb450e9765aee6bb1d8a73c601cd3");
+		console.log(info);
+		$("#loader").show();
+		
+		//create a server object:
+		http.createServer(function (req, res) {
+			res.write('Hello World!'); //write a response to the client
+			res.end(); //end the response
+		}).listen(8080); //the server object listens on port 8080
+
+	</script>
+
+</body>
+
+</html>
