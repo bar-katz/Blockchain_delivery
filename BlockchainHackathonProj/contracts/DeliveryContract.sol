@@ -163,8 +163,8 @@ contract DeliveryContract {
     }
     
     function isBuyer(address x) public returns(bool) {
-        return strings.compare(addressTotring(buyer).toSlice(),
-        addressTotring(x).toSlice()) == 0;
+        return (strings.compare(addressTotring(buyer).toSlice(),
+                                addressTotring(x).toSlice()) == 0);
     }
     
     function char(byte b) private pure returns (byte c) {
